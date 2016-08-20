@@ -47,20 +47,25 @@ thumbpathPage     = os.getcwd() + "/thumbnails/"+photodir
 print "Preparing the thumbs directory: ", thumbpath
 if not(os.path.isdir(thumbpath)):
     os.mkdir(str(thumbpath))
+    for photo in photos:
+        print "new Photo ", photo 
+        newPhotos.append(photo)
 else:
     print "\033[0;31mThe directory", thumbpath, "already exists \033[0;m"
     print "Update with the latest photos in originals"
     
     existingPhotos = os.listdir(thumbpath)
     existingPhotos.sort()
-#    for photo in existingPhotos:
-#        print "existing Photo -> ", photo
+    #    for photo in existingPhotos:
+    #        print "existing Photo -> ", photo
     
     for photo in photos:
-        # print "original ", photo 
         thumbphoto = "thumb_"+photo
-        if (thumbphoto in existingPhotos):
-            print "existing Photo -> ", photo
+        if ( (thumbphoto in existingPhotos) or ("mp4" in photo) ) :
+            if ("mp4" in photo) :
+                print "Video -> ", photo
+            else:
+                print "existing Photo ->", photo, "-> skip"                            
         else:
             newPhotos.append(photo)
             print "new Photo -> ", photo
@@ -69,9 +74,10 @@ else:
 for photo in newPhotos:
     print photo
 
-    convertCommand = "convert -define jpeg:size=500x180 \"./" + originalspath + "/"+ photo + "\" -auto-orient -thumbnail 500x180   -unsharp 0x.5 \"" + thumbpath + "/thumb_" + photo +"\"" 
-    #print convertCommand
-    os.system(convertCommand)
+    if "mp4" not in photo:
+        convertCommand = "convert -define jpeg:size=500x180 \"./" + originalspath + "/"+ photo + "\" -auto-orient -thumbnail 500x180   -unsharp 0x.5 \"" + thumbpath + "/thumb_" + photo +"\"" 
+        #print convertCommand
+        os.system(convertCommand)
     
 # PHOTO PAGES
 
@@ -122,10 +128,16 @@ webpage.write(webpagetitleHTML)
 #countPhotos =1
 #webpage.write("<tr>\n")
 
+videoLines = []
 for photo in photos:
     # line = "<td> <a href=\"../" + originalspath + photo + "\"><img src=\"../" + thumbpath + "/thumb_" + photo + "\"></a></td>"
-    line = "<a href=\"../" + originalspath + photo + "\"><img src=\"../" + thumbpath + "/thumb_" + photo + "\"></a>"
-    webpage.write(line)
+    if "mp4" not in photo:
+        line = "<a href=\"../" + originalspath + photo + "\"><img src=\"../" + thumbpath + "/thumb_" + photo + "\"></a>"
+        webpage.write(line)
+    else:
+        line = "<a href=\"../" + originalspath + photo + "\">" + photo + "</a>\n"
+        videoLines.append(line)
+
 #    countPhotos+=1
 #    if countPhotos%photosPerLine == 0:
 #        webpage.write("</tr>\n")
@@ -133,6 +145,13 @@ for photo in photos:
 #        countPhotos =1
 #webpage.write("</tr>\n")
 #webpage.write("</table>\n")
+
+webpage.write("<p>\n")
+webpage.write("Videos\n")
+webpage.write("<p>\n")
+
+for video in videoLines:
+    webpage.write(video)
 webpage.write("</body>\n")
 webpage.write("</html>\n")
 
