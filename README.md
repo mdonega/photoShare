@@ -17,3 +17,6 @@ To move files to the server $IP:
 - copyServer.py folderName will copy the directory structure (large, thumbnails, pages) to $IP:/mnt/disk/data/www/public/photos
 
 mp4 will be just copied over to $IP:/mnt/disk/data/www/public/photos/large
+
+Note for ImageMagick on mac os X later than El Capitan:
+https://stackoverflow.com/questions/36488189/dyld-library-not-loaded-libdiff-dylib-on-osx-el-capitan
