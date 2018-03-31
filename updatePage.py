@@ -61,12 +61,34 @@ if not(os.path.isdir(thumbpath)):
 else:
     print "\033[0;31mThe directory", thumbpath, "already exists \033[0;m"
     print "Update with the latest photos in originals"
-    
-    existingPhotos = os.listdir(thumbpath)
-    existingPhotos.sort()
-    #    for photo in existingPhotos:
-    #        print "existing Photo -> ", photo
-    
+
+
+    lsThumbnails = "\"ls /mnt/disk/data/www/public/photos/thumbnails/" + photodir + "/ > /mnt/disk/data/www/public/photos/thumbnails/" + photodir + "/thumbnails.lst\""
+    print lsThumbnails
+    command = "ssh mauro@$IPLOCHOME " + lsThumbnails
+    os.system(command)
+    os.system("scp mauro@$IPLOCHOME:/mnt/disk/data/www/public/photos/thumbnails/" +photodir+ "/thumbnails.lst ./")
+
+    existingPhotos_tmp = ''
+    with open('./thumbnails.lst', 'r') as myfile:
+        existingPhotos_tmp=myfile.readlines()
+
+    existingPhotos= []
+    for photo in existingPhotos_tmp:
+        photo = photo.replace("\n","")
+        # print photo        
+        existingPhotos.append(photo)
+    # print "existingPhotos = ", existingPhotos
+    # print "new photos = ", photos
+
+    existingPhotos_nothumb= []
+    for photo in existingPhotos_tmp:
+        if photo != "thumbnails.lst\n":
+            photo = photo.replace("thumb_","")
+            # print photo        
+            existingPhotos_nothumb.append(photo)
+    # print "existingPhotos_nothumb = ", existingPhotos_nothumb
+
     for photo in photos:
         thumbphoto = "thumb_"+photo
         if ( (thumbphoto in existingPhotos) or ("mp4" in photo) ) :
@@ -139,6 +161,17 @@ webpage.write(webpagetitleHTML)
 #webpage.write("<tr>\n")
 
 videoLines = []
+
+# photos = existingPhotos_nothumb
+
+tmpphotos = []
+for photo in photos:
+    photo = photo.replace("\n","")
+    # print photo        
+    tmpphotos.append(photo)
+photos = tmpphotos
+# print "final list ", photos
+
 for photo in photos:
     # line = "<td> <a href=\"../" + originalspath + photo + "\"><img src=\"../" + thumbpath + "/thumb_" + photo + "\"></a></td>"
     if "mp4" not in photo:
