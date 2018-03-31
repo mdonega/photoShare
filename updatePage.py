@@ -36,6 +36,7 @@ for photo in photos:
 photos = photostmp
 photos.sort()
 newPhotos = []
+# print "original photos", photos
 
 largepath = "large/"+photodir+"/"
 print "Large PATH = ", largepath
@@ -51,7 +52,6 @@ if not(os.path.isdir("pages")):
     os.mkdir("./pages")
 
 thumbpath     = "thumbnails/"+photodir
-#thumbpathPage     = os.getcwd() + "/thumbnails/"+photodir
 print "Preparing the thumbs directory: ", thumbpath
 if not(os.path.isdir(thumbpath)):
     os.mkdir(str(thumbpath))
@@ -63,36 +63,47 @@ else:
     print "Update with the latest photos in originals"
 
 
-    lsThumbnails = "\"ls /mnt/disk/data/www/public/photos/thumbnails/" + photodir + "/ > /mnt/disk/data/www/public/photos/thumbnails/" + photodir + "/thumbnails.lst\""
-    print lsThumbnails
-    command = "ssh mauro@$IPLOCHOME " + lsThumbnails
+    lsLarge = "\"ls /mnt/disk/data/www/public/photos/large/" + photodir + "/ > /mnt/disk/data/www/public/photos/large/" + photodir + "/large.lst\""
+    print lsLarge
+    command = "ssh mauro@$IPLOCHOME " + lsLarge
     os.system(command)
-    os.system("scp mauro@$IPLOCHOME:/mnt/disk/data/www/public/photos/thumbnails/" +photodir+ "/thumbnails.lst ./")
+    os.system("scp mauro@$IPLOCHOME:/mnt/disk/data/www/public/photos/large/" +photodir+ "/large.lst ./")
 
     existingPhotos_tmp = ''
-    with open('./thumbnails.lst', 'r') as myfile:
+    with open('./large.lst', 'r') as myfile:
         existingPhotos_tmp=myfile.readlines()
-    # print existingPhotos_tmp
-        
+    # print "existingPhotos_tmp = ",existingPhotos_tmp
+
     existingPhotos= []
     for photo in existingPhotos_tmp:
-        photo = photo.replace("\n","")
-        # print photo        
-        existingPhotos.append(photo)
-    print "existingPhotos = ", existingPhotos
-    print "new photos = ", photos
-    
-    existingPhotos_nothumb= []
-    for photo in existingPhotos_tmp:
-        if photo != "thumbnails.lst\n":
-            photo = photo.replace("thumb_","")
+        if photo != "large.lst\n":
+            photo = photo.replace("\n","")
             # print photo        
-            existingPhotos_nothumb.append(photo)
-    # print "existingPhotos_nothumb = ", existingPhotos_nothumb
+            existingPhotos.append(photo)
+    # print "existingPhotos = ", existingPhotos
+    
+    existingPhotos_nolarge= []
+    for photo in existingPhotos:
+        if photo != "large.lst\n":
+            photo = photo.replace("large_","")
+            # print photo        
+            existingPhotos_nolarge.append(photo)
+    # print "existingPhotos_nolarge = ", existingPhotos_nolarge
+
+    existingPhotos_thumb= []
+    for photo in existingPhotos:
+        if photo != "large.lst\n":
+            photo = photo.replace("large_","thumb_")
+            # print photo        
+            existingPhotos_thumb.append(photo)
+    # print "existingPhotos_thumb = ", existingPhotos_thumb
+
+    # print "PHOTOS     = ", photos
 
     for photo in photos:
         thumbphoto = "thumb_"+photo
-        if ( (thumbphoto in existingPhotos) or ("mp4" in photo) ) :
+        print thumbphoto
+        if ( (thumbphoto in existingPhotos_thumb) or ("mp4" in photo) ) :
             if ("mp4" in photo) :
                 print "Video -> ", photo
             else:
@@ -101,10 +112,7 @@ else:
             newPhotos.append(photo)
             print "new Photo -> ", photo
 
-
-print "EXISTING   = ", existingPhotos
-print "EXISTINGNT = ", existingPhotos_nothumb
-print "NEWPHOTOS  = ", newPhotos
+# print "NEWPHOTOS  = ", newPhotos
 
 for photo in newPhotos:
     print photo
@@ -167,7 +175,7 @@ webpage.write(webpagetitleHTML)
 
 videoLines = []
 
-photos = existingPhotos_nothumb+newPhotos
+photos = existingPhotos_nolarge+newPhotos
 
 tmpphotos = []
 for photo in photos:
@@ -175,7 +183,8 @@ for photo in photos:
     # print photo        
     tmpphotos.append(photo)
 photos = tmpphotos
-print "final list ", photos
+# print "final list ", photos
+
 
 for photo in photos:
     # line = "<td> <a href=\"../" + originalspath + photo + "\"><img src=\"../" + thumbpath + "/thumb_" + photo + "\"></a></td>"
