@@ -72,15 +72,16 @@ else:
     existingPhotos_tmp = ''
     with open('./thumbnails.lst', 'r') as myfile:
         existingPhotos_tmp=myfile.readlines()
-
+    # print existingPhotos_tmp
+        
     existingPhotos= []
     for photo in existingPhotos_tmp:
         photo = photo.replace("\n","")
         # print photo        
         existingPhotos.append(photo)
-    # print "existingPhotos = ", existingPhotos
-    # print "new photos = ", photos
-
+    print "existingPhotos = ", existingPhotos
+    print "new photos = ", photos
+    
     existingPhotos_nothumb= []
     for photo in existingPhotos_tmp:
         if photo != "thumbnails.lst\n":
@@ -100,6 +101,10 @@ else:
             newPhotos.append(photo)
             print "new Photo -> ", photo
 
+
+print "EXISTING   = ", existingPhotos
+print "EXISTINGNT = ", existingPhotos_nothumb
+print "NEWPHOTOS  = ", newPhotos
 
 for photo in newPhotos:
     print photo
@@ -162,7 +167,7 @@ webpage.write(webpagetitleHTML)
 
 videoLines = []
 
-# photos = existingPhotos_nothumb
+photos = existingPhotos_nothumb+newPhotos
 
 tmpphotos = []
 for photo in photos:
@@ -170,7 +175,7 @@ for photo in photos:
     # print photo        
     tmpphotos.append(photo)
 photos = tmpphotos
-# print "final list ", photos
+print "final list ", photos
 
 for photo in photos:
     # line = "<td> <a href=\"../" + originalspath + photo + "\"><img src=\"../" + thumbpath + "/thumb_" + photo + "\"></a></td>"
