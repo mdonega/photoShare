@@ -51,6 +51,10 @@ if not(os.path.isdir("thumbnails")):
 if not(os.path.isdir("pages")):
     os.mkdir("./pages")
 
+existingPhotos= []
+existingPhotos_nolarge= []
+existingPhotos_thumb= []
+
 thumbpath     = "thumbnails/"+photodir
 print "Preparing the thumbs directory: ", thumbpath
 if not(os.path.isdir(thumbpath)):
@@ -74,7 +78,6 @@ else:
         existingPhotos_tmp=myfile.readlines()
     # print "existingPhotos_tmp = ",existingPhotos_tmp
 
-    existingPhotos= []
     for photo in existingPhotos_tmp:
         if photo != "large.lst\n":
             photo = photo.replace("\n","")
@@ -82,7 +85,6 @@ else:
             existingPhotos.append(photo)
     # print "existingPhotos = ", existingPhotos
     
-    existingPhotos_nolarge= []
     for photo in existingPhotos:
         if photo != "large.lst\n":
             photo = photo.replace("large_","")
@@ -90,7 +92,6 @@ else:
             existingPhotos_nolarge.append(photo)
     # print "existingPhotos_nolarge = ", existingPhotos_nolarge
 
-    existingPhotos_thumb= []
     for photo in existingPhotos:
         if photo != "large.lst\n":
             photo = photo.replace("large_","thumb_")
@@ -185,6 +186,7 @@ for photo in photos:
 photos = tmpphotos
 # print "final list ", photos
 
+photos.sort()
 
 for photo in photos:
     # line = "<td> <a href=\"../" + originalspath + photo + "\"><img src=\"../" + thumbpath + "/thumb_" + photo + "\"></a></td>"
