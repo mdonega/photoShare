@@ -3,7 +3,8 @@
 Author: Mauro Donega`
 
 Scripts to keep photos on my raspberry pi:
-- put your photo originals in originals/<mydir>
+- git clone <git repo>
+- put your photo originals in originals/<mydir> (create originals if it doesn't exists)
 - run ./makeUpdate.sh <folderName>
 
 The scripts will create:
