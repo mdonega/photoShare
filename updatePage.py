@@ -2,7 +2,7 @@ import sys
 import os
 
 # run the script from the directory that has as
-# subdirectories ./originals and ./thumbnails
+# subdirectories ./originals
 
 if len(sys.argv) == 1:     
     print "\033[0;31mNo originals directory \033[0;m"
@@ -27,6 +27,8 @@ if not(os.path.isdir(originalspath)) :
 
 photodir = words[1]
 
+# list of local photos you might add
+#
 photos = os.listdir(originalspath)
 #rm .DS_Store
 photostmp = []
@@ -38,6 +40,14 @@ photos.sort()
 newPhotos = []
 # print "original photos", photos
 
+# initialize lists I'll need later
+#
+existingPhotos= []
+existingPhotos_nolarge= []
+existingPhotos_thumb= []
+
+# create the "large" directory and the subdirectory with the name of the new photos folder "photodir"
+#
 largepath = "large/"+photodir+"/"
 print "Large PATH = ", largepath
 print "Preparing the large format directory: ", largepath
@@ -46,16 +56,14 @@ if not(os.path.isdir("large")):
 if not(os.path.isdir(largepath)):
     os.mkdir(str(largepath))
 
+# create the "thumbnails" directory and the subdirectory with the name of the new photos folder "photodir"
+#
 if not(os.path.isdir("thumbnails")):
     os.mkdir("./thumbnails")
 if not(os.path.isdir("pages")):
     os.mkdir("./pages")
-
-existingPhotos= []
-existingPhotos_nolarge= []
-existingPhotos_thumb= []
-
 thumbpath     = "thumbnails/"+photodir
+
 print "Preparing the thumbs directory: ", thumbpath
 if not(os.path.isdir(thumbpath)):
     os.mkdir(str(thumbpath))
@@ -66,13 +74,15 @@ else:
     print "\033[0;31mThe directory", thumbpath, "already exists \033[0;m"
     print "Update with the latest photos in originals"
 
-
+    # get the list of already exisiting photos on the server
+    #
     lsLarge = "\"ls /mnt/disk/data/www/public/photos/large/" + photodir + "/ > /mnt/disk/data/www/public/photos/large/" + photodir + "/large.lst\""
     print lsLarge
     command = "ssh mauro@$IPLOCHOME " + lsLarge
     os.system(command)
     os.system("scp mauro@$IPLOCHOME:/mnt/disk/data/www/public/photos/large/" +photodir+ "/large.lst ./")
 
+    # create the lists with the existing photos in different formats
     existingPhotos_tmp = ''
     with open('./large.lst', 'r') as myfile:
         existingPhotos_tmp=myfile.readlines()
@@ -99,11 +109,14 @@ else:
             existingPhotos_thumb.append(photo)
     # print "existingPhotos_thumb = ", existingPhotos_thumb
 
-    # print "PHOTOS     = ", photos
 
+    # add prefix "thumb_" to compare exisiting photos
+    #
     for photo in photos:
         thumbphoto = "thumb_"+photo
         print thumbphoto
+        # spot the already existing photos
+        #
         if ( (thumbphoto in existingPhotos_thumb) or ("mp4" in photo) ) :
             if ("mp4" in photo) :
                 print "Video -> ", photo
@@ -115,6 +128,7 @@ else:
 
 # print "NEWPHOTOS  = ", newPhotos
 
+# imagemagick convert photos to the format I want
 for photo in newPhotos:
     print photo
 
@@ -125,8 +139,10 @@ for photo in newPhotos:
         os.system(convertCommand)
         #print convertCommand
     
-# PHOTO PAGES
-
+# finally prepare the html pages
+#
+# first the one with the "photodir"
+#
 webpagename  = "./pages/"+photodir+".html"
 webpagetitle = "<title>" + photodir + "</title>"
 webpagetitleHTML = "<font color=\"lightgrey\" size =+3>"+ photodir +"</font><p>\n"
@@ -188,6 +204,8 @@ photos = tmpphotos
 
 photos.sort()
 
+# manage videos differently
+#
 for photo in photos:
     # line = "<td> <a href=\"../" + originalspath + photo + "\"><img src=\"../" + thumbpath + "/thumb_" + photo + "\"></a></td>"
     if "mp4" not in photo:
@@ -196,14 +214,6 @@ for photo in photos:
     else:
         line = "<a href=\"../" + largepath + photo + "\">" + photo + "</a><br>"
         videoLines.append(line)
-
-#    countPhotos+=1
-#    if countPhotos%photosPerLine == 0:
-#        webpage.write("</tr>\n")
-#        webpage.write("<tr>\n")
-#        countPhotos =1
-#webpage.write("</tr>\n")
-#webpage.write("</table>\n")
 
 webpage.write("<p>\n")
 webpage.write("Videos\n")
@@ -214,8 +224,10 @@ for video in videoLines:
 webpage.write("</body>\n")
 webpage.write("</html>\n")
 
-# INDEX PAGE
 
+# and the html index page "photos.html" --> this has to be improved: get the index from the server and merge this one
+# also adding a temp cover thumbnail
+# 
 indexpagename  = "./photos.html"
 indexpagetitle = "<title> Photos </title>"
 indexpagetitleHTML = "<font color=\"lightgrey\" size =+3> Photos</font><p>\n"
