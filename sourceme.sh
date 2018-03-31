@@ -1,0 +1,31 @@
+#./makeUpdate.sh Gennaio2017
+#./makeUpdate.sh Febbraio2017
+#./makeUpdate.sh Marzo2017   
+#./makeUpdate.sh Aprile2017   
+#./makeUpdate.sh Maggio2017
+#./makeUpdate.sh Giugno2017   
+#./makeUpdate.sh Luglio2017
+#./makeUpdate.sh Agosto2017   
+#./makeUpdate.sh Settembre2017   
+#./makeUpdate.sh Ottobre2017   
+# ./makeUpdate.sh Novembre2017   
+#./makeUpdate.sh Dicembre2017   
+#./makeUpdate.sh Gennaio2018   
+#./makeUpdate.sh Febbraio2018
+./makeUpdate.sh Marzo2018   
+
+#./copyServer.sh Gennaio2017 
+#./copyServer.sh Febbraio2017
+#./copyServer.sh Marzo2017   
+#./copyServer.sh Aprile2017   
+#./copyServer.sh Maggio2017   
+#./copyServer.sh Giugno2017   
+#./copyServer.sh Luglio2017   
+#./copyServer.sh Agosto2017   
+#./copyServer.sh Settembre2017   
+#./copyServer.sh Ottobre2017   
+#./copyServer.sh Novembre2017   
+#./copyServer.sh Dicembre2017   
+#./copyServer.sh Gennaio2018
+#./copyServer.sh Febbraio2018   
+./copyServer.sh Marzo2018   

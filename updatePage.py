@@ -37,13 +37,21 @@ photos = photostmp
 photos.sort()
 newPhotos = []
 
+largepath = "large/"+photodir+"/"
+print "Large PATH = ", largepath
+print "Preparing the large format directory: ", largepath
+if not(os.path.isdir("large")):
+    os.mkdir("./large")
+if not(os.path.isdir(largepath)):
+    os.mkdir(str(largepath))
+
 if not(os.path.isdir("thumbnails")):
     os.mkdir("./thumbnails")
 if not(os.path.isdir("pages")):
     os.mkdir("./pages")
 
 thumbpath     = "thumbnails/"+photodir
-thumbpathPage     = os.getcwd() + "/thumbnails/"+photodir
+#thumbpathPage     = os.getcwd() + "/thumbnails/"+photodir
 print "Preparing the thumbs directory: ", thumbpath
 if not(os.path.isdir(thumbpath)):
     os.mkdir(str(thumbpath))
@@ -75,9 +83,11 @@ for photo in newPhotos:
     print photo
 
     if "mp4" not in photo:
-        convertCommand = "convert -define jpeg:size=500x180 \"./" + originalspath + "/"+ photo + "\" -auto-orient -thumbnail 500x180   -unsharp 0x.5 \"" + thumbpath + "/thumb_" + photo +"\"" 
-        #print convertCommand
+        convertCommand = "convert -define jpeg:size=500x180 \"./" + originalspath + "/"+ photo + "\" -auto-orient -thumbnail 500x180   -unsharp 0x.5 \"" + thumbpath + "/thumb_" + photo +"\""
         os.system(convertCommand)
+        convertCommand = "convert -define jpeg:size=1328x747 \"./" + originalspath + "/"+ photo + "\" -auto-orient -thumbnail 1328x747 -unsharp 0x.5 \"" + largepath + "/large_" + photo +"\"" 
+        os.system(convertCommand)
+        #print convertCommand
     
 # PHOTO PAGES
 
@@ -100,14 +110,14 @@ webpage.write("body\n")
 webpage.write("{ ; -webkit-background-size: cover\n")
 webpage.write("  ; -moz-background-size: cover\n")
 webpage.write("  ; background-size: cover\n")
-webpage.write("  ; font-family      :  Arial, helvetica, Verdana, sans-serif\n")
+webpage.write("  ; font-family      :  Noteworthy, Arial, helvetica, Verdana, sans-serif\n")
 webpage.write("  ; margin-left      : 0in\n")
 webpage.write("  }\n")
 webpage.write("hr\n")
 webpage.write("{ width            : 100%\n")
 webpage.write("  }\n")
 webpage.write("td\n")
-webpage.write("{ font-family      : Arial, helvetica, Verdana, sans-serif\n")
+webpage.write("{ font-family      : Noteworthy, Arial, helvetica, Verdana, sans-serif\n")
 webpage.write("  }\n")
 webpage.write("-->\n")
 webpage.write("</style>\n")
@@ -132,10 +142,10 @@ videoLines = []
 for photo in photos:
     # line = "<td> <a href=\"../" + originalspath + photo + "\"><img src=\"../" + thumbpath + "/thumb_" + photo + "\"></a></td>"
     if "mp4" not in photo:
-        line = "<a href=\"../" + originalspath + photo + "\"><img src=\"../" + thumbpath + "/thumb_" + photo + "\"></a>"
+        line = "<a href=\"../" + largepath + "large_" + photo + "\"><img src=\"../" + thumbpath + "/thumb_" + photo + "\"></a>"
         webpage.write(line)
     else:
-        line = "<a href=\"../" + originalspath + photo + "\">" + photo + "</a>\n"
+        line = "<a href=\"../" + largepath + photo + "\">" + photo + "</a><br>"
         videoLines.append(line)
 
 #    countPhotos+=1
@@ -179,14 +189,14 @@ indexpage.write("body\n")
 indexpage.write("{ ; -webkit-background-size: cover\n")
 indexpage.write("  ; -moz-background-size: cover\n")
 indexpage.write("  ; background-size: cover\n")
-indexpage.write("  ; font-family      :  Arial, helvetica, Verdana, sans-serif\n")
+indexpage.write("  ; font-family      :  Noteworthy, Arial, helvetica, Verdana, sans-serif\n")
 indexpage.write("  ; margin-left      : 0in\n")
 indexpage.write("  }\n")
 indexpage.write("hr\n")
 indexpage.write("{ width            : 100%\n")
 indexpage.write("  }\n")
 indexpage.write("td\n")
-indexpage.write("{ font-family      : Arial, helvetica, Verdana, sans-serif\n")
+indexpage.write("{ font-family      : Noteworthy, Arial, helvetica, Verdana, sans-serif\n")
 indexpage.write("  }\n")
 indexpage.write("-->\n")
 indexpage.write("</style>\n")
