@@ -5,24 +5,24 @@ import os
 # subdirectories ./originals
 
 if len(sys.argv) == 1:     
-    print ("\033[0;31mNo originals directory \033[0;m")
+    print "\033[0;31mNo originals directory \033[0;m"
     sys.exit()
 if len(sys.argv) >  2:
-    print ("\033[0;31mToo many arguments \033[0;m")
+    print "\033[0;31mToo many arguments \033[0;m"
     sys.exit()
 
 originalspath = str(sys.argv[1])
-print ("Photo PATH = ", originalspath)
+print "Photo PATH = ", originalspath
 originalspathPage = os.getcwd() + "/" + originalspath 
 
 words = originalspath.split('/')
 
 if (len(words)<2) or (words[0]!="originals") :
-    print ("\033[0;31mmissing originals directory \033[0;m")
-    print ("\033[0;31mpath = originals/NAME \033[0;m")
+    print "\033[0;31mmissing originals directory \033[0;m"
+    print "\033[0;31mpath = originals/NAME \033[0;m"
     sys.exit()
 if not(os.path.isdir(originalspath)) :
-    print ("\033[0;31mmissing originals: ", originalspath, "does not exist \033[0;m")
+    print "\033[0;31mmissing originals: ", originalspath, "does not exist \033[0;m"
     sys.exit()    
 
 photodir = words[1]
@@ -38,7 +38,7 @@ for photo in photos:
 photos = photostmp
 photos.sort()
 newPhotos = []
-# print ("original photos", photos)
+# print "original photos", photos
 
 # initialize lists I'll need later
 #
@@ -49,8 +49,8 @@ existingPhotos_thumb= []
 # create the "large" directory and the subdirectory with the name of the new photos folder "photodir"
 #
 largepath = "large/"+photodir+"/"
-print ("Large PATH = ", largepath)
-print ("Preparing the large format directory: ", largepath)
+print "Large PATH = ", largepath
+print "Preparing the large format directory: ", largepath
 if not(os.path.isdir("large")):
     os.mkdir("./large")
 if not(os.path.isdir(largepath)):
@@ -64,20 +64,20 @@ if not(os.path.isdir("pages")):
     os.mkdir("./pages")
 thumbpath     = "thumbnails/"+photodir
 
-print ("Preparing the thumbs directory: ", thumbpath)
+print "Preparing the thumbs directory: ", thumbpath
 if not(os.path.isdir(thumbpath)):
     os.mkdir(str(thumbpath))
     for photo in photos:
-        print ("new Photo ", photo )
+        print "new Photo ", photo 
         newPhotos.append(photo)
 else:
-    print ("\033[0;31mThe directory", thumbpath, "already exists \033[0;m")
-    print ("Update with the latest photos in originals")
+    print "\033[0;31mThe directory", thumbpath, "already exists \033[0;m"
+    print "Update with the latest photos in originals"
 
     # get the list of already exisiting photos on the server
     #
     lsLarge = "\"ls /mnt/disk/data/www/public/photos/large/" + photodir + "/ > /mnt/disk/data/www/public/photos/large/" + photodir + "/large.lst\""
-    print (lsLarge)
+    print lsLarge
     command = "ssh mauro@$IPLOCHOME " + lsLarge
     os.system(command)
     os.system("scp mauro@$IPLOCHOME:/mnt/disk/data/www/public/photos/large/" +photodir+ "/large.lst ./")
@@ -86,58 +86,58 @@ else:
     existingPhotos_tmp = ''
     with open('./large.lst', 'r') as myfile:
         existingPhotos_tmp=myfile.readlines()
-    # print ("existingPhotos_tmp = ",existingPhotos_tmp)
+    # print "existingPhotos_tmp = ",existingPhotos_tmp
 
     for photo in existingPhotos_tmp:
         if photo != "large.lst\n":
             photo = photo.replace("\n","")
-            # print (photo        )
+            # print photo        
             existingPhotos.append(photo)
-    # print ("existingPhotos = ", existingPhotos)
+    # print "existingPhotos = ", existingPhotos
     
     for photo in existingPhotos:
         if photo != "large.lst\n":
             photo = photo.replace("large_","")
-            # print (photo        )
+            # print photo        
             existingPhotos_nolarge.append(photo)
-    # print ("existingPhotos_nolarge = ", existingPhotos_nolarge)
+    # print "existingPhotos_nolarge = ", existingPhotos_nolarge
 
     for photo in existingPhotos:
         if photo != "large.lst\n":
             photo = photo.replace("large_","thumb_")
-            # print (photo        )
+            # print photo        
             existingPhotos_thumb.append(photo)
-    # print ("existingPhotos_thumb = ", existingPhotos_thumb)
+    # print "existingPhotos_thumb = ", existingPhotos_thumb
 
 
     # add prefix "thumb_" to compare exisiting photos
     #
     for photo in photos:
         thumbphoto = "thumb_"+photo
-        print (thumbphoto)
+        print thumbphoto
         # spot the already existing photos
         #
         if ( (thumbphoto in existingPhotos_thumb) or ("mp4" in photo) ) :
             if ("mp4" in photo) :
-                print ("Video -> ", photo)
+                print "Video -> ", photo
             else:
-                print ("existing Photo ->", photo, "-> skip"                            )
+                print "existing Photo ->", photo, "-> skip"                            
         else:
             newPhotos.append(photo)
-            print ("new Photo -> ", photo)
+            print "new Photo -> ", photo
 
-# print ("NEWPHOTOS  = ", newPhotos)
+# print "NEWPHOTOS  = ", newPhotos
 
 # imagemagick convert photos to the format I want
 for photo in newPhotos:
-    print (photo)
+    print photo
 
     if "mp4" not in photo:
         convertCommand = "convert -define jpeg:size=500x180 \"./" + originalspath + "/"+ photo + "\" -auto-orient -thumbnail 500x180   -unsharp 0x.5 \"" + thumbpath + "/thumb_" + photo +"\""
         os.system(convertCommand)
         convertCommand = "convert -define jpeg:size=1328x747 \"./" + originalspath + "/"+ photo + "\" -auto-orient -thumbnail 1328x747 -unsharp 0x.5 \"" + largepath + "/large_" + photo +"\"" 
         os.system(convertCommand)
-        #print (convertCommand)
+        #print convertCommand
     
 # finally prepare the html pages
 #
@@ -197,10 +197,10 @@ photos = existingPhotos_nolarge+newPhotos
 tmpphotos = []
 for photo in photos:
     photo = photo.replace("\n","")
-    # print (photo        )
+    # print photo        
     tmpphotos.append(photo)
 photos = tmpphotos
-# print ("final list ", photos)
+# print "final list ", photos
 
 photos.sort()
 
