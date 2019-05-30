@@ -13,6 +13,7 @@
 #./makeUpdate.sh Gennaio2018   
 #./makeUpdate.sh Febbraio2018
 ./makeUpdate.sh Marzo2018   
+./makeUpdate.sh Aprile2018   
 
 #./copyServer.sh Gennaio2017 
 #./copyServer.sh Febbraio2017
@@ -29,3 +30,4 @@
 #./copyServer.sh Gennaio2018
 #./copyServer.sh Febbraio2018   
 ./copyServer.sh Marzo2018   
+./copyServer.sh Aprile2018   
